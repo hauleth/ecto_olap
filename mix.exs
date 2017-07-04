@@ -15,10 +15,11 @@ defmodule EctoOLAP.Mixfile do
     ]
   end
 
-  def application, do: []
+  def application, do: [applications: [:ecto]]
 
   defp deps do
-    [{:ecto, ">= 2.0.0 and < 3.0.0", only: [:dev, :test]},
+    [{:ecto, ">= 2.0.0 and < 3.0.0"},
+     {:postgrex, ">= 0.0.0", only: [:dev, :test]},
      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
      {:credo, ">= 0.0.0", only: :dev, runtime: false}]
