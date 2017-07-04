@@ -11,10 +11,19 @@ defmodule EctoOLAP.Mixfile do
 
      # Docs
      name: "Ecto.OLAP",
-     source_url: "https://github.com/hauleth/ecto_olap"]
+     description: description(),
+     source_url: "https://github.com/hauleth/ecto_olap",
+
+     package: package()]
   end
 
   def application, do: []
+
+  defp description do
+    """
+    Data analytics helpers for Ecto and PostgreSQL
+    """
+  end
 
   defp deps do
     [{:ecto, ">= 2.0.0 and < 3.0.0", only: [:dev, :test]},
@@ -22,5 +31,14 @@ defmodule EctoOLAP.Mixfile do
      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},
      {:credo, ">= 0.0.0", only: :dev, runtime: false}]
+  end
+
+  defp package do
+    [maintainers: ["Łukasz Jan Niemier"],
+     files: ["lib", "mix.exs", "README*", "LICENSE*"],
+     licenses: ["MIT"],
+     links: %{
+       "GitHub" => "https://github.com/hauleth/ecto_olap"
+     }]
   end
 end
