@@ -11,14 +11,13 @@ defmodule EctoOLAP.Mixfile do
 
      # Docs
      name: "Ecto.OLAP",
-     source_url: "https://github.com/hauleth/ecto_olap",
-    ]
+     source_url: "https://github.com/hauleth/ecto_olap"]
   end
 
-  def application, do: [applications: [:ecto]]
+  def application, do: []
 
   defp deps do
-    [{:ecto, ">= 2.0.0 and < 3.0.0"},
+    [{:ecto, ">= 2.0.0 and < 3.0.0", only: [:dev, :test]},
      {:postgrex, ">= 0.0.0", only: [:dev, :test]},
      {:ex_doc, "~> 0.14", only: :dev, runtime: false},
      {:dialyxir, ">= 0.0.0", only: :dev, runtime: false},

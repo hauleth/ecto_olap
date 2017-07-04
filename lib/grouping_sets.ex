@@ -33,6 +33,7 @@ defmodule Ecto.OLAP.GroupingSets do
 
       iex> import Ecto.Query
       iex> import Ecto.OLAP.GroupingSets
+      iex>
       iex> alias Ecto.Integration.TestRepo
       iex>
       iex> TestRepo.all from entry in "example",
