@@ -27,7 +27,7 @@ defmodule Ecto.OLAP.Statistics do
 
   @functions_yx [
     corr: """
-    Compute correlation coefficient for given `Y` and `X` expressions
+    Compute correlation coefficient for given `y` and `x` expressions.
 
     ## Example
 
@@ -41,7 +41,7 @@ defmodule Ecto.OLAP.Statistics do
         [0.9806576205544681]
     """,
     regr_avgx: """
-    Average of the independent variable `X`
+    Average of the independent variable `x`.
 
     ## Example
 
@@ -55,7 +55,7 @@ defmodule Ecto.OLAP.Statistics do
         [5.320000000000001]
     """,
     regr_avgy: """
-    Average of the dependent variable `Y`
+    Average of the dependent variable `y`.
 
     ## Example
 
@@ -68,7 +68,7 @@ defmodule Ecto.OLAP.Statistics do
         ...>   select: regr_avgy(e.divorce_rate, e.marg_cons)
         [4.390000000000001]
     """,
-    regr_count: "Count rows where both expressions are nonnull",
+    regr_count: "Count rows where both expressions are nonnull.",
     regr_r2: """
     Square of the correlation coefficient.
 
@@ -84,7 +84,8 @@ defmodule Ecto.OLAP.Statistics do
         [0.9616893687515513]
     """,
     regr_intercept: """
-    y-intercept of the least-squares-fit linear equation determined by the (X, Y) pairs.
+    y-intercept of the least-squares-fit linear equation determined
+    by the `(x, y)` pairs.
 
     ## Example
 
@@ -98,7 +99,8 @@ defmodule Ecto.OLAP.Statistics do
         [3.363198179561455]
     """,
     regr_slope: """
-    Slope of the least-squares-fit linear equation determined by the (X, Y) pairs.
+    Slope of the least-squares-fit linear equation determined
+    by the `(x, y)` pairs.
 
     ## Example
 
@@ -168,9 +170,9 @@ defmodule Ecto.OLAP.Statistics do
   ]
 
   for {name, doc} <- @functions_yx do
-      @doc doc
-      defmacro unquote(name)(y, x), do: call_yx(unquote(name), y, x)
-    end
+    @doc doc
+    defmacro unquote(name)(y, x), do: call_yx(unquote(name), y, x)
+  end
 
   defp call_yx(name, y, x) do
     quote do: fragment(unquote("#{name}(?, ?)"), unquote(y), unquote(x))
