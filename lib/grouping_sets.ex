@@ -4,9 +4,9 @@ defmodule Ecto.OLAP.GroupingSets do
 
   **WARNING**: Currently only PostgreSQL is supported
 
-  # Example
+  # Example data
 
-  All examples assumes we have table `example` with content:
+  All examples assumes we have table `grouping` with content:
 
   | foo | bar | baz |
   | --- | --- | --- |
@@ -36,7 +36,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex>
       iex> alias Ecto.Integration.TestRepo
       iex>
-      iex> TestRepo.all from entry in "example",
+      iex> TestRepo.all from entry in "grouping",
       ...>   group_by: grouping_sets([{entry.foo, entry.bar}, {entry.foo}]),
       ...>   select: %{foo: entry.foo, bar: entry.bar, count: count(entry.foo)}
       [%{foo: "a", bar: 1,   count: 2},
@@ -58,15 +58,13 @@ defmodule Ecto.OLAP.GroupingSets do
 
   This is shorthand notation for all prefixes of given column list.
 
-  ## Example
-
-      from e in "example",
+      from e in "grouping",
         group_by: rollup([e.foo, e.bar]),
         # …
 
   Will be equivalent to:
 
-      from e in "example",
+      from e in "grouping",
         group_by: grouping_sets([{e.foo, e.bar}, {e.foo}, {}]),
         # …
 
@@ -76,7 +74,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> import Ecto.OLAP.GroupingSets
       iex> alias Ecto.Integration.TestRepo
       iex>
-      iex> TestRepo.all from entry in "example",
+      iex> TestRepo.all from entry in "grouping",
       ...>   group_by: rollup([entry.foo, entry.bar]),
       ...>   select: %{foo: entry.foo, bar: entry.bar, count: count(entry.foo)}
       [%{foo: "a", bar: 1,   count: 2},
@@ -95,15 +93,13 @@ defmodule Ecto.OLAP.GroupingSets do
 
   This is shorthand notation for all combinations of given columns.
 
-  ## Example
-
-      from e in "example",
+      from e in "grouping",
         group_by: cube([e.foo, e.bar, e.baz]),
         # …
 
   Will be equivalent to:
 
-      from e in "example",
+      from e in "grouping",
         group_by: grouping_sets([{e.foo, e.bar, e.baz},
                                  {e.foo, e.bar       },
                                  {e.foo,        e.baz},
@@ -120,7 +116,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> import Ecto.OLAP.GroupingSets
       iex> alias Ecto.Integration.TestRepo
       iex>
-      iex> TestRepo.all from entry in "example",
+      iex> TestRepo.all from entry in "grouping",
       ...>   group_by: cube([entry.foo, entry.bar, entry.baz]),
       ...>   select: %{foo: entry.foo, bar: entry.bar, baz: entry.baz, count: count(entry.foo)}
       [%{foo: "a", bar: 1,   baz: "c", count: 1},
@@ -167,7 +163,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> import Ecto.OLAP.GroupingSets
       iex> alias Ecto.Integration.TestRepo
       iex>
-      iex> TestRepo.all from entry in "example",
+      iex> TestRepo.all from entry in "grouping",
       ...>   group_by: cube([entry.foo, entry.bar]),
       ...>   select: %{cols: grouping([entry.foo, entry.bar]), count: count(entry.foo)}
       [%{cols: 0b00, count: 2},
