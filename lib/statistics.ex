@@ -69,12 +69,102 @@ defmodule Ecto.OLAP.Statistics do
         [4.390000000000001]
     """,
     regr_count: "Count rows where both expressions are nonnull",
-    regr_intercept: "",
-    regr_r2: "",
-    regr_slope: "",
-    regr_sxx: "",
-    regr_sxy: "",
-    regr_syy: "",
+    regr_r2: """
+    Square of the correlation coefficient.
+
+    ## Example
+
+        iex> import Ecto.Query
+        iex> import Ecto.OLAP.Statistics
+        iex>
+        iex> alias Ecto.Integration.TestRepo
+        iex>
+        iex> TestRepo.all from e in "stats_agg",
+        ...>   select: regr_r2(e.divorce_rate, e.marg_cons)
+        [0.9616893687515513]
+    """,
+    regr_intercept: """
+    y-intercept of the least-squares-fit linear equation determined by the (X, Y) pairs.
+
+    ## Example
+
+        iex> import Ecto.Query
+        iex> import Ecto.OLAP.Statistics
+        iex>
+        iex> alias Ecto.Integration.TestRepo
+        iex>
+        iex> TestRepo.all from e in "stats_agg",
+        ...>   select: regr_intercept(e.divorce_rate, e.marg_cons)
+        [3.363198179561455]
+    """,
+    regr_slope: """
+    Slope of the least-squares-fit linear equation determined by the (X, Y) pairs.
+
+    ## Example
+
+        iex> import Ecto.Query
+        iex> import Ecto.OLAP.Statistics
+        iex>
+        iex> alias Ecto.Integration.TestRepo
+        iex>
+        iex> TestRepo.all from e in "stats_agg",
+        ...>   select: regr_slope(e.divorce_rate, e.marg_cons)
+        [0.1930078609846896]
+    """,
+    regr_sxx: """
+    "Sum of squares" of independent variable.
+
+        sum(x^2) - sum(x)^2
+        -------------------
+                 N
+
+    ## Example
+
+        iex> import Ecto.Query
+        iex> import Ecto.OLAP.Statistics
+        iex>
+        iex> alias Ecto.Integration.TestRepo
+        iex>
+        iex> TestRepo.all from e in "stats_agg",
+        ...>   select: regr_sxx(e.divorce_rate, e.marg_cons)
+        [19.33599999999983]
+    """,
+    regr_sxy: """
+    "Sum of products" of independent times dependent variable.
+
+        sum(x * y) - sum(x) * sum(y)
+        ----------------------------
+                     N
+
+    ## Example
+
+        iex> import Ecto.Query
+        iex> import Ecto.OLAP.Statistics
+        iex>
+        iex> alias Ecto.Integration.TestRepo
+        iex>
+        iex> TestRepo.all from e in "stats_agg",
+        ...>   select: regr_sxy(e.divorce_rate, e.marg_cons)
+        [3.7319999999999256]
+    """,
+    regr_syy: """
+    "Sum of squares" of dependent variable.
+
+        sum(y^2) - sum(y)^2
+        -------------------
+                 N
+
+    ## Example
+
+        iex> import Ecto.Query
+        iex> import Ecto.OLAP.Statistics
+        iex>
+        iex> alias Ecto.Integration.TestRepo
+        iex>
+        iex> TestRepo.all from e in "stats_agg",
+        ...>   select: regr_syy(e.divorce_rate, e.marg_cons)
+        [0.7489999999999327]
+    """,
   ]
 
   for {name, doc} <- @functions_yx do
