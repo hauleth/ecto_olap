@@ -168,15 +168,18 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> alias Ecto.Integration.TestRepo
       iex>
       iex> TestRepo.all from entry in "example",
-      ...>   group_by: rollup([entry.foo, entry.bar]),
+      ...>   group_by: cube([entry.foo, entry.bar]),
       ...>   select: %{cols: grouping([entry.foo, entry.bar]), count: count(entry.foo)}
-      [%{cols: 0, count: 2},
-       %{cols: 0, count: 1},
-       %{cols: 1, count: 3},
-       %{cols: 0, count: 1},
-       %{cols: 0, count: 1},
-       %{cols: 1, count: 2},
-       %{cols: 3, count: 5}]
+      [%{cols: 0b00, count: 2},
+       %{cols: 0b00, count: 1},
+       %{cols: 0b01, count: 3},
+       %{cols: 0b00, count: 1},
+       %{cols: 0b00, count: 1},
+       %{cols: 0b01, count: 2},
+       %{cols: 0b11, count: 5},
+       %{cols: 0b10, count: 2},
+       %{cols: 0b10, count: 2},
+       %{cols: 0b10, count: 1}]
   """
   @spec grouping([column]) :: query
   defmacro grouping(columns), do: query(columns, "GROUPING")
