@@ -45,4 +45,12 @@ defmodule Ecto.OLAP.GroupingSetsTest do
 
     assert gs == cb
   end
+
+  test "allow dynamic columns via `field/2`" do
+    column = :foo
+
+    assert Repo.all from e in "example",
+      group_by: rollup([field(e, ^column)]),
+      select: [field(e, ^column), count(e.id)]
+  end
 end

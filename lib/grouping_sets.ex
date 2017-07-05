@@ -39,12 +39,12 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> TestRepo.all from entry in "example",
       ...>   group_by: grouping_sets([{entry.foo, entry.bar}, {entry.foo}]),
       ...>   select: %{foo: entry.foo, bar: entry.bar, count: count(entry.foo)}
-      [%{bar: 1,   count: 2, foo: "a"},
-       %{bar: 2,   count: 1, foo: "a"},
-       %{bar: nil, count: 3, foo: "a"},
-       %{bar: 2,   count: 1, foo: "b"},
-       %{bar: 3,   count: 1, foo: "b"},
-       %{bar: nil, count: 2, foo: "b"}]
+      [%{foo: "a", bar: 1,   count: 2},
+       %{foo: "a", bar: 2,   count: 1},
+       %{foo: "a", bar: nil, count: 3},
+       %{foo: "b", bar: 2,   count: 1},
+       %{foo: "b", bar: 3,   count: 1},
+       %{foo: "b", bar: nil, count: 2}]
   """
   @spec grouping_sets([columns]) :: query
   defmacro grouping_sets(groups) when is_list(groups) do
@@ -79,13 +79,13 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> TestRepo.all from entry in "example",
       ...>   group_by: rollup([entry.foo, entry.bar]),
       ...>   select: %{foo: entry.foo, bar: entry.bar, count: count(entry.foo)}
-      [%{bar: 1,   count: 2, foo: "a"},
-       %{bar: 2,   count: 1, foo: "a"},
-       %{bar: nil, count: 3, foo: "a"},
-       %{bar: 2,   count: 1, foo: "b"},
-       %{bar: 3,   count: 1, foo: "b"},
-       %{bar: nil, count: 2, foo: "b"},
-       %{bar: nil, count: 5, foo: nil}]
+      [%{foo: "a", bar: 1,   count: 2},
+       %{foo: "a", bar: 2,   count: 1},
+       %{foo: "a", bar: nil, count: 3},
+       %{foo: "b", bar: 2,   count: 1},
+       %{foo: "b", bar: 3,   count: 1},
+       %{foo: "b", bar: nil, count: 2},
+       %{foo: nil, bar: nil, count: 5}]
   """
   @spec rollup([column]) :: query
   defmacro rollup(columns), do: query(columns, "ROLLUP")
@@ -123,32 +123,32 @@ defmodule Ecto.OLAP.GroupingSets do
       iex> TestRepo.all from entry in "example",
       ...>   group_by: cube([entry.foo, entry.bar, entry.baz]),
       ...>   select: %{foo: entry.foo, bar: entry.bar, baz: entry.baz, count: count(entry.foo)}
-      [%{bar: 1,   baz: "c", count: 1, foo: "a"},
-       %{bar: 1,   baz: "d", count: 1, foo: "a"},
-       %{bar: 1,   baz: nil, count: 2, foo: "a"},
-       %{bar: 2,   baz: "c", count: 1, foo: "a"},
-       %{bar: 2,   baz: nil, count: 1, foo: "a"},
-       %{bar: nil, baz: nil, count: 3, foo: "a"},
-       %{bar: 2,   baz: "d", count: 1, foo: "b"},
-       %{bar: 2,   baz: nil, count: 1, foo: "b"},
-       %{bar: 3,   baz: "c", count: 1, foo: "b"},
-       %{bar: 3,   baz: nil, count: 1, foo: "b"},
-       %{bar: nil, baz: nil, count: 2, foo: "b"},
-       %{bar: nil, baz: nil, count: 5, foo: nil},
-       %{bar: nil, baz: "c", count: 2, foo: "a"},
-       %{bar: nil, baz: "c", count: 1, foo: "b"},
-       %{bar: nil, baz: "c", count: 3, foo: nil},
-       %{bar: nil, baz: "d", count: 1, foo: "a"},
-       %{bar: nil, baz: "d", count: 1, foo: "b"},
-       %{bar: nil, baz: "d", count: 2, foo: nil},
-       %{bar: 1,   baz: "c", count: 1, foo: nil},
-       %{bar: 1,   baz: "d", count: 1, foo: nil},
-       %{bar: 1,   baz: nil, count: 2, foo: nil},
-       %{bar: 2,   baz: "c", count: 1, foo: nil},
-       %{bar: 2,   baz: "d", count: 1, foo: nil},
-       %{bar: 2,   baz: nil, count: 2, foo: nil},
-       %{bar: 3,   baz: "c", count: 1, foo: nil},
-       %{bar: 3,   baz: nil, count: 1, foo: nil}]
+      [%{foo: "a", bar: 1,   baz: "c", count: 1},
+       %{foo: "a", bar: 1,   baz: "d", count: 1},
+       %{foo: "a", bar: 1,   baz: nil, count: 2},
+       %{foo: "a", bar: 2,   baz: "c", count: 1},
+       %{foo: "a", bar: 2,   baz: nil, count: 1},
+       %{foo: "a", bar: nil, baz: nil, count: 3},
+       %{foo: "b", bar: 2,   baz: "d", count: 1},
+       %{foo: "b", bar: 2,   baz: nil, count: 1},
+       %{foo: "b", bar: 3,   baz: "c", count: 1},
+       %{foo: "b", bar: 3,   baz: nil, count: 1},
+       %{foo: "b", bar: nil, baz: nil, count: 2},
+       %{foo: nil, bar: nil, baz: nil, count: 5},
+       %{foo: "a", bar: nil, baz: "c", count: 2},
+       %{foo: "b", bar: nil, baz: "c", count: 1},
+       %{foo: nil, bar: nil, baz: "c", count: 3},
+       %{foo: "a", bar: nil, baz: "d", count: 1},
+       %{foo: "b", bar: nil, baz: "d", count: 1},
+       %{foo: nil, bar: nil, baz: "d", count: 2},
+       %{foo: nil, bar: 1,   baz: "c", count: 1},
+       %{foo: nil, bar: 1,   baz: "d", count: 1},
+       %{foo: nil, bar: 1,   baz: nil, count: 2},
+       %{foo: nil, bar: 2,   baz: "c", count: 1},
+       %{foo: nil, bar: 2,   baz: "d", count: 1},
+       %{foo: nil, bar: 2,   baz: nil, count: 2},
+       %{foo: nil, bar: 3,   baz: "c", count: 1},
+       %{foo: nil, bar: 3,   baz: nil, count: 1}]
   """
   @spec cube([column]) :: query
   defmacro cube(columns), do: query(columns, "CUBE")

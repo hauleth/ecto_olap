@@ -1,0 +1,14 @@
+{
+  "mix.exs": {
+    "type": "mix"
+  },
+  "lib/*.ex": {
+    "type": "lib",
+    "template": "defmodule {camelcase|capitalize|dot} do\nend",
+    "alternate": "test/{}_test.exs"
+  },
+  "test/*_test.exs": {
+    "type": "test",
+    "alternate": "lib/{}.ex"
+  }
+}
