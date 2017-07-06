@@ -17,7 +17,7 @@ defmodule Ecto.OLAP.GroupingSetsTest do
       %{foo: "b", bar: 3, baz: "c"},
     ]
 
-    Repo.insert_all("example", entries)
+    Repo.insert_all("grouping", entries)
 
     :ok
   end
@@ -25,10 +25,10 @@ defmodule Ecto.OLAP.GroupingSetsTest do
   doctest Ecto.OLAP.GroupingSets
 
   test "compare `rollup/1` and `grouping_sets/1`" do
-    gs = Repo.all from e in "example",
+    gs = Repo.all from e in "grouping",
       group_by: grouping_sets([{e.foo, e.bar}, {e.foo}, {}]),
       select: [e.foo, e.bar, count(e.id)]
-    ro = Repo.all from e in "example",
+    ro = Repo.all from e in "grouping",
       group_by: rollup([e.foo, e.bar]),
       select: [e.foo, e.bar, count(e.id)]
 
@@ -36,10 +36,10 @@ defmodule Ecto.OLAP.GroupingSetsTest do
   end
 
   test "compare `cube/1` and `grouping_sets/1`" do
-    gs = Repo.all from e in "example",
+    gs = Repo.all from e in "grouping",
       group_by: grouping_sets([{e.foo, e.bar}, {e.foo}, {e.bar}, {}]),
       select: [e.foo, e.bar, count(e.id)]
-    cb = Repo.all from e in "example",
+    cb = Repo.all from e in "grouping",
       group_by: cube([e.foo, e.bar]),
       select: [e.foo, e.bar, count(e.id)]
 
@@ -49,7 +49,7 @@ defmodule Ecto.OLAP.GroupingSetsTest do
   test "allow dynamic columns via `field/2`" do
     column = :foo
 
-    assert Repo.all from e in "example",
+    assert Repo.all from e in "grouping",
       group_by: rollup([field(e, ^column)]),
       select: [field(e, ^column), count(e.id)]
   end
