@@ -13,5 +13,11 @@ defmodule Ecto.Integration.Migration do
       add :divorce_rate, :float
       add :marg_cons, :float
     end
+
+    create table(:window) do
+      add :depname, :string
+      add :empno, :integer
+      add :salary, :integer
+    end
   end
 end
