@@ -6,18 +6,18 @@ defmodule Ecto.OLAP.GroupingSetsTest do
 
   alias Ecto.Integration.TestRepo, as: Repo
 
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
-
-    entries = [
+  setup_all do
+    Repo.insert_all("grouping", [
       %{foo: "a", bar: 1, baz: "c"},
       %{foo: "a", bar: 1, baz: "d"},
       %{foo: "a", bar: 2, baz: "c"},
       %{foo: "b", bar: 2, baz: "d"},
       %{foo: "b", bar: 3, baz: "c"},
-    ]
+    ])
 
-    Repo.insert_all("grouping", entries)
+    on_exit fn ->
+      Ecto.Adapters.SQL.Sandbox.checkout(Repo)
+    end
 
     :ok
   end
