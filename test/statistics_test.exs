@@ -3,10 +3,8 @@ defmodule Ecto.OLAP.StatisticsTest do
 
   alias Ecto.Integration.TestRepo, as: Repo
 
-  setup do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
-
-    entries = [
+  setup_all do
+    Repo.insert_all("stats_agg", [
       %{year: 2000, divorce_rate: 5.0, marg_cons: 8.2},
       %{year: 2001, divorce_rate: 4.7, marg_cons: 7.0},
       %{year: 2002, divorce_rate: 4.6, marg_cons: 6.5},
@@ -17,9 +15,11 @@ defmodule Ecto.OLAP.StatisticsTest do
       %{year: 2007, divorce_rate: 4.2, marg_cons: 4.5},
       %{year: 2008, divorce_rate: 4.2, marg_cons: 4.2},
       %{year: 2009, divorce_rate: 4.2, marg_cons: 3.7},
-    ]
+    ])
 
-    Repo.insert_all("stats_agg", entries)
+    on_exit fn ->
+      Ecto.Adapters.SQL.Sandbox.checkout(Repo)
+    end
 
     :ok
   end
