@@ -68,6 +68,8 @@ defmodule Ecto.OLAP.GroupingSets do
         group_by: grouping_sets([{e.foo, e.bar}, {e.foo}, {}]),
         # …
 
+  See `grouping_sets/1` for details.
+
   ## Example
 
       iex> import Ecto.Query
@@ -109,6 +111,8 @@ defmodule Ecto.OLAP.GroupingSets do
                                  {              e.baz},
                                  {                   }]),
         # …
+
+  See `grouping_sets/1` for details.
 
   ## Example
 
@@ -176,6 +180,8 @@ defmodule Ecto.OLAP.GroupingSets do
        %{cols: 0b10, count: 2},
        %{cols: 0b10, count: 2},
        %{cols: 0b10, count: 1}]
+
+  See also `cube/1`.
   """
   @spec grouping([column]) :: query
   defmacro grouping(columns), do: query(columns, "GROUPING")
