@@ -1,5 +1,5 @@
 defmodule Ecto.OLAP.Window do
-  @doc """
+  @moduledoc """
   Allows calling window functions
 
   ## Example
@@ -14,51 +14,41 @@ defmodule Ecto.OLAP.Window do
       ...>     depname: entry.depname,
       ...>     salary: entry.salary,
       ...>     empno: entry.empno,
-      ...>     rank: window(rank(),
-      ...>                       over: [partition_by: [entry.depname],
-      ...>                              order_by: [entry.salary, entry.empno]])}
-      [%{depname: "develop"  , empno: 7 , rank: 1, salary: 4200},
-       %{depname: "develop"  , empno: 9 , rank: 2, salary: 4500},
-       %{depname: "develop"  , empno: 10, rank: 3, salary: 5200},
-       %{depname: "develop"  , empno: 11, rank: 4, salary: 5200},
-       %{depname: "develop"  , empno: 8 , rank: 5, salary: 6000},
-       %{depname: "personnel", empno: 5 , rank: 1, salary: 3500},
-       %{depname: "personnel", empno: 2 , rank: 2, salary: 3900},
-       %{depname: "sales"    , empno: 3 , rank: 1, salary: 4800},
-       %{depname: "sales"    , empno: 4 , rank: 2, salary: 4800},
-       %{depname: "sales"    , empno: 1 , rank: 3, salary: 5000}]
+      ...>     max: window(max(entry.salary),
+      ...>                 over: [partition_by: entry.depname])}
+      [%{depname: "develop"  , empno: 11, max: 6000, salary: 5200},
+       %{depname: "develop"  , empno: 7 , max: 6000, salary: 4200},
+       %{depname: "develop"  , empno: 9 , max: 6000, salary: 4500},
+       %{depname: "develop"  , empno: 8 , max: 6000, salary: 6000},
+       %{depname: "develop"  , empno: 10, max: 6000, salary: 5200},
+       %{depname: "personnel", empno: 5 , max: 3900, salary: 3500},
+       %{depname: "personnel", empno: 2 , max: 3900, salary: 3900},
+       %{depname: "sales"    , empno: 3 , max: 5000, salary: 4800},
+       %{depname: "sales"    , empno: 1 , max: 5000, salary: 5000},
+       %{depname: "sales"    , empno: 4 , max: 5000, salary: 4800}]
   """
-  defmacro window({func, _, []}, options) when is_atom(func) do
-    quote do
-      fragment(unquote("#{func}() OVER (?)"),
-               unquote(opts(options)))
-    end
-  end
-  defmacro window({func, _, args}, options) when is_atom(func) and is_list(args) do
-    {q, params} = build_query(args)
 
+  alias Ecto.OLAP.Window.Over
+
+  @doc "See `Ecto.OLAP.Window` module documentation"
+  defmacro window(func, options) do
     quote do
-      fragment(unquote("#{func}(" <> q <> ") OVER (?)"),
-               unquote_splicing(params),
+      fragment(unquote("? OVER (?)"),
+               unquote(func),
                unquote(opts(options)))
     end
   end
 
   defp opts([over: over]) do
-    Ecto.OLAP.Window.Over.parse(over)
-    |> Ecto.OLAP.Window.Over.to_query
+    over
+    |> Over.parse
+    |> Over.to_query
   end
-
-  defp build_query(items, joiner \\ ",")
-  defp build_query(list, joiner) when is_list(list) do
-    q = "?" |> List.duplicate(Enum.count(list)) |> Enum.join(joiner)
-
-    {q, list}
-  end
-  defp build_query(item, _), do: {"?", [item]}
 end
 
 defmodule Ecto.OLAP.Window.Over do
+  @moduledoc false
+
   defstruct [
     partition_by: nil,
     order_by: nil,
