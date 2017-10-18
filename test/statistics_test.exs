@@ -1,5 +1,5 @@
 defmodule Ecto.OLAP.StatisticsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Ecto.Integration.TestRepo, as: Repo
 

@@ -1,5 +1,5 @@
 defmodule Ecto.OLAP.GroupingSetsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import Ecto.Query
   import Ecto.OLAP.GroupingSets
