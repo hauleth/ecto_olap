@@ -38,6 +38,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex>
       iex> TestRepo.all from entry in "grouping",
       ...>   group_by: grouping_sets([{entry.foo, entry.bar}, {entry.foo}]),
+      ...>   order_by: [entry.foo, entry.bar],
       ...>   select: %{foo: entry.foo, bar: entry.bar, count: count(entry.foo)}
       [%{foo: "a", bar: 1,   count: 2},
        %{foo: "a", bar: 2,   count: 1},
@@ -78,6 +79,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex>
       iex> TestRepo.all from entry in "grouping",
       ...>   group_by: rollup([entry.foo, entry.bar]),
+      ...>   order_by: [entry.foo, entry.bar],
       ...>   select: %{foo: entry.foo, bar: entry.bar, count: count(entry.foo)}
       [%{foo: "a", bar: 1,   count: 2},
        %{foo: "a", bar: 2,   count: 1},
@@ -122,25 +124,23 @@ defmodule Ecto.OLAP.GroupingSets do
       iex>
       iex> TestRepo.all from entry in "grouping",
       ...>   group_by: cube([entry.foo, entry.bar, entry.baz]),
+      ...>   order_by: [entry.foo, entry.bar, entry.baz],
       ...>   select: %{foo: entry.foo, bar: entry.bar, baz: entry.baz, count: count(entry.foo)}
       [%{foo: "a", bar: 1,   baz: "c", count: 1},
        %{foo: "a", bar: 1,   baz: "d", count: 1},
        %{foo: "a", bar: 1,   baz: nil, count: 2},
        %{foo: "a", bar: 2,   baz: "c", count: 1},
        %{foo: "a", bar: 2,   baz: nil, count: 1},
+       %{foo: "a", bar: nil, baz: "c", count: 2},
+       %{foo: "a", bar: nil, baz: "d", count: 1},
        %{foo: "a", bar: nil, baz: nil, count: 3},
        %{foo: "b", bar: 2,   baz: "d", count: 1},
        %{foo: "b", bar: 2,   baz: nil, count: 1},
        %{foo: "b", bar: 3,   baz: "c", count: 1},
        %{foo: "b", bar: 3,   baz: nil, count: 1},
-       %{foo: "b", bar: nil, baz: nil, count: 2},
-       %{foo: nil, bar: nil, baz: nil, count: 5},
-       %{foo: "a", bar: nil, baz: "c", count: 2},
        %{foo: "b", bar: nil, baz: "c", count: 1},
-       %{foo: nil, bar: nil, baz: "c", count: 3},
-       %{foo: "a", bar: nil, baz: "d", count: 1},
        %{foo: "b", bar: nil, baz: "d", count: 1},
-       %{foo: nil, bar: nil, baz: "d", count: 2},
+       %{foo: "b", bar: nil, baz: nil, count: 2},
        %{foo: nil, bar: 1,   baz: "c", count: 1},
        %{foo: nil, bar: 1,   baz: "d", count: 1},
        %{foo: nil, bar: 1,   baz: nil, count: 2},
@@ -148,7 +148,10 @@ defmodule Ecto.OLAP.GroupingSets do
        %{foo: nil, bar: 2,   baz: "d", count: 1},
        %{foo: nil, bar: 2,   baz: nil, count: 2},
        %{foo: nil, bar: 3,   baz: "c", count: 1},
-       %{foo: nil, bar: 3,   baz: nil, count: 1}]
+       %{foo: nil, bar: 3,   baz: nil, count: 1},
+       %{foo: nil, bar: nil, baz: "c", count: 3},
+       %{foo: nil, bar: nil, baz: "d", count: 2},
+       %{foo: nil, bar: nil, baz: nil, count: 5}]
   """
   @spec cube([column]) :: query
   defmacro cube(columns), do: query(columns, "CUBE")
@@ -169,6 +172,7 @@ defmodule Ecto.OLAP.GroupingSets do
       iex>
       iex> TestRepo.all from entry in "grouping",
       ...>   group_by: cube([entry.foo, entry.bar]),
+      ...>   order_by: [entry.foo, entry.bar],
       ...>   select: %{cols: grouping([entry.foo, entry.bar]), count: count(entry.foo)}
       [%{cols: 0b00, count: 2},
        %{cols: 0b00, count: 1},
@@ -176,10 +180,10 @@ defmodule Ecto.OLAP.GroupingSets do
        %{cols: 0b00, count: 1},
        %{cols: 0b00, count: 1},
        %{cols: 0b01, count: 2},
-       %{cols: 0b11, count: 5},
        %{cols: 0b10, count: 2},
        %{cols: 0b10, count: 2},
-       %{cols: 0b10, count: 1}]
+       %{cols: 0b10, count: 1},
+       %{cols: 0b11, count: 5}]
 
   See also `cube/1`.
   """
