@@ -1,4 +1,4 @@
-defmodule EctoOLAP.Mixfile do
+defmodule Ecto.OLAP.Mixfile do
   use Mix.Project
 
   def project do
