@@ -29,6 +29,7 @@ defmodule Ecto.OLAP.Window do
       iex> alias Ecto.Integration.TestRepo
       iex>
       iex> TestRepo.all from entry in "window",
+      ...>   order_by: [fragment("max"), entry.empno],
       ...>   select: %{
       ...>     depname: entry.depname,
       ...>     salary: entry.salary,
@@ -36,16 +37,16 @@ defmodule Ecto.OLAP.Window do
       ...>     max: window(max(entry.salary),
       ...>                 over: [partition_by: entry.depname])}
       [
-        %{depname: "develop"  , empno: 11, max: 6000, salary: 5200},
-        %{depname: "develop"  , empno:  7, max: 6000, salary: 4200},
-        %{depname: "develop"  , empno:  9, max: 6000, salary: 4500},
-        %{depname: "develop"  , empno:  8, max: 6000, salary: 6000},
-        %{depname: "develop"  , empno: 10, max: 6000, salary: 5200},
-        %{depname: "personnel", empno:  5, max: 3900, salary: 3500},
         %{depname: "personnel", empno:  2, max: 3900, salary: 3900},
-        %{depname: "sales"    , empno:  3, max: 5000, salary: 4800},
+        %{depname: "personnel", empno:  5, max: 3900, salary: 3500},
         %{depname: "sales"    , empno:  1, max: 5000, salary: 5000},
+        %{depname: "sales"    , empno:  3, max: 5000, salary: 4800},
         %{depname: "sales"    , empno:  4, max: 5000, salary: 4800},
+        %{depname: "develop"  , empno:  7, max: 6000, salary: 4200},
+        %{depname: "develop"  , empno:  8, max: 6000, salary: 6000},
+        %{depname: "develop"  , empno:  9, max: 6000, salary: 4500},
+        %{depname: "develop"  , empno: 10, max: 6000, salary: 5200},
+        %{depname: "develop"  , empno: 11, max: 6000, salary: 5200},
       ]
 
   Rank ordered by salary:
@@ -83,7 +84,7 @@ defmodule Ecto.OLAP.Window do
       iex> alias Ecto.Integration.TestRepo
       iex>
       iex> TestRepo.all from entry in "window",
-      ...>   order_by: entry.salary,
+      ...>   order_by: [entry.salary, entry.empno],
       ...>   select: %{
       ...>     salary: entry.salary,
       ...>     empno: entry.empno,
@@ -91,16 +92,16 @@ defmodule Ecto.OLAP.Window do
       ...>                 over: [order_by: entry.salary,
       ...>                        range: [:current, :unbounded]])}
       [
-        %{empno:  5, salary: 3500, sum:  3500},
-        %{empno:  2, salary: 3900, sum:  7400},
-        %{empno:  7, salary: 4200, sum: 11600},
-        %{empno:  9, salary: 4500, sum: 16100},
-        %{empno:  4, salary: 4800, sum: 25700},
-        %{empno:  3, salary: 4800, sum: 25700},
-        %{empno:  1, salary: 5000, sum: 30700},
-        %{empno: 11, salary: 5200, sum: 41100},
-        %{empno: 10, salary: 5200, sum: 41100},
-        %{empno:  8, salary: 6000, sum: 47100},
+        %{empno:  5, salary: 3500, sum: 47100},
+        %{empno:  2, salary: 3900, sum: 43600},
+        %{empno:  7, salary: 4200, sum: 39700},
+        %{empno:  9, salary: 4500, sum: 35500},
+        %{empno:  3, salary: 4800, sum: 31000},
+        %{empno:  4, salary: 4800, sum: 31000},
+        %{empno:  1, salary: 5000, sum: 21400},
+        %{empno: 10, salary: 5200, sum: 16400},
+        %{empno: 11, salary: 5200, sum: 16400},
+        %{empno:  8, salary: 6000, sum:  6000},
       ]
   """
 

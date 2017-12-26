@@ -18,6 +18,7 @@ defmodule Ecto.Integration.Migration do
       add :depname, :string
       add :empno, :integer
       add :salary, :integer
+      add :profit, :integer
     end
   end
 end
