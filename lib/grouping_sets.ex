@@ -191,7 +191,7 @@ defmodule Ecto.OLAP.GroupingSets do
   defmacro grouping(columns), do: query(columns, "GROUPING")
 
   defp query(data, name) do
-    quote do: fragment(unquote(name <> " ?"), unquote(fragment_list data))
+    quote do: fragment(unquote(name <> " ?"), unquote(fragment_list(data)))
   end
 
   defp fragment_list(list) when is_list(list) do
@@ -201,6 +201,6 @@ defmodule Ecto.OLAP.GroupingSets do
   end
 
   defp to_sql({:{}, _, data}), do: to_sql(data)
-  defp to_sql(tuple) when is_tuple(tuple), do: to_sql Tuple.to_list tuple
-  defp to_sql(list) when is_list(list), do: fragment_list list
+  defp to_sql(tuple) when is_tuple(tuple), do: to_sql(Tuple.to_list(tuple))
+  defp to_sql(list) when is_list(list), do: fragment_list(list)
 end
